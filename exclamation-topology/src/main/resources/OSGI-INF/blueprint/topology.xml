@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:b="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:so="http://storm.hmsonline.com/schemas/osgi"
+           xmlns:ss="http://storm.hmsonline.com/schemas/starter"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+           http://storm.hmsonline.com/schemas/osgi http://storm.hmsonline.com/schemas/osgi/storm-osgi.xsd
+           http://storm.hmsonline.com/schemas/starter http://storm.hmsonline.com/schemas/starter/storm-starter.xsd">
+
+  <service id="exclamation" ref="topology" auto-export="interfaces"/>
+
+  <so:topology b:id="topology" name="exclamation-topology">
+    <so:configuration>
+      <so:properties debug="true" workers="4"/>
+    </so:configuration>
+    <so:spouts>
+      <so:pollingSpout name="exclamationSpout" interval="100" unit="MILLISECONDS" parallelismHint="10" maxTaskParallelism="1">
+        <so:source>
+          <ss:randomSentence>
+            <ss:sentences>
+              <value>nathan</value>
+              <value>mike</value>
+              <value>jackson</value>
+              <value>golda</value>
+              <value>bertels</value>
+            </ss:sentences>
+          </ss:randomSentence>
+        </so:source>
+        <so:schema>
+          <value>word</value>
+        </so:schema>
+      </so:pollingSpout>
+    </so:spouts>
+
+    <so:bolts>
+      <so:basicBolt name="exclaim1" parallelismHint="3">
+        <so:executor>
+          <ss:exclamation/>
+        </so:executor>
+        <so:schema>
+          <value>word</value>
+        </so:schema>
+        <so:subscription>
+          <so:subscribes to="exclamationSpout">
+            <so:distribution>
+              <so:shuffle/>
+            </so:distribution>
+          </so:subscribes>
+        </so:subscription>
+      </so:basicBolt>
+      <so:basicBolt name="exclaim2" parallelismHint="2">
+        <so:executor>
+          <ss:exclamation/>
+        </so:executor>
+        <so:schema>
+          <value>word</value>
+        </so:schema>
+        <so:subscription>
+          <so:subscribes to="exclaim1">
+            <so:distribution>
+              <so:shuffle/>
+            </so:distribution>
+          </so:subscribes>
+        </so:subscription>
+      </so:basicBolt>
+    </so:bolts>
+  </so:topology>
+</blueprint>

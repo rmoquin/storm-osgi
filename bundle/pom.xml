@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.rmoquin.storm</groupId>
+    <artifactId>osgi-parent</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>storm-osgi</artifactId>
+  <packaging>bundle</packaging>
+  <name>Storm OSGI</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <taskdef classname="org.apache.xbean.blueprint.generator.MappingGeneratorTask" name="mapping">
+                  <classpath>
+                    <pathelement path="${basedir}/target/classes" />
+                    <path refid="maven.compile.classpath" />
+                  </classpath>
+                </taskdef>
+                <mapping namespace="http://storm.hmsonline.com/schemas/osgi" 
+                         srcdir="src/main/java" 
+                         destFile="${project.build.outputDirectory}/storm-osgi.xsd" 
+                         metaInfDir="${project.build.outputDirectory}/" />
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Private-Package>com.rmoquin.storm.osgi.impl</Private-Package>
+            <Export-Package>
+              com.rmoquin.storm.osgi.*
+            </Export-Package>
+            <Import-Package>
+              clojure.lang,
+              carbonite,
+              com.esotericsoftware.kryo,
+              com.esotericsoftware.kryo.io,
+              com.esotericsoftware.kryo.serializers,
+              com.esotericsoftware.kryo.util,
+              *
+            </Import-Package>
+            <Include-Resource>
+              {maven-resources},
+              META-INF=${project.build.outputDirectory}/META-INF
+            </Include-Resource>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.qdox</groupId>
+      <artifactId>qdox</artifactId>
+      <version>1.6.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.aries.blueprint</groupId>
+      <artifactId>org.apache.aries.blueprint.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.rmoquin.xbean</groupId>
+      <artifactId>xbean-blueprint</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.rmoquin.storm</groupId>
+      <artifactId>storm</artifactId>
+    </dependency>
+  </dependencies>
+</project>

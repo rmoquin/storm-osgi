@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.rmoquin.storm</groupId>
+    <artifactId>osgi-parent</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>storm-starter</artifactId>
+  <packaging>bundle</packaging>
+  <name>Storm Starter</name>  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <taskdef classname="org.apache.xbean.blueprint.generator.MappingGeneratorTask" name="mapping">
+                  <classpath>
+                    <pathelement path="${basedir}/target/classes" />
+                    <path refid="maven.compile.classpath" />
+                  </classpath>
+                </taskdef>
+                <mapping namespace="http://storm.hmsonline.com/schemas/starter" 
+                         srcdir="src/main/java" 
+                         destFile="${project.build.outputDirectory}/storm-starter.xsd" 
+                         metaInfDir="${project.build.outputDirectory}/" />
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Export-Package>
+              com.rmoquin.storm.starter.executor,
+              com.rmoquin.storm.starter.source
+            </Export-Package>
+            <Import-Package>
+              org.apache.xbean*,
+              *
+            </Import-Package>
+            <Include-Resource>
+              {maven-resources},
+              META-INF=${project.build.outputDirectory}/META-INF
+            </Include-Resource>
+            <Fragment-Host>${project.groupId}.storm-osgi</Fragment-Host>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <!-- This dependency is only specified here so it will be picked up in the classpath of the xbean-plugin, not for anything
+    runtime related to this bundle.-->
+    <dependency>
+      <groupId>com.thoughtworks.qdox</groupId>
+      <artifactId>qdox</artifactId>
+      <version>1.6.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.rmoquin.storm</groupId>
+      <artifactId>storm-osgi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rmoquin.xbean</groupId>
+      <artifactId>xbean-blueprint</artifactId>
+    </dependency>
+  </dependencies>
+</project>

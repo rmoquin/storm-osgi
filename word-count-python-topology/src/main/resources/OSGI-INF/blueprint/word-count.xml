@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:b="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:so="http://storm.hmsonline.com/schemas/osgi"
+           xmlns:ss="http://storm.hmsonline.com/schemas/starter"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+           http://storm.hmsonline.com/schemas/osgi http://storm.hmsonline.com/schemas/osgi/storm-osgi.xsd
+           http://storm.hmsonline.com/schemas/starter http://storm.hmsonline.com/schemas/starter/storm-starter.xsd">
+    
+  <service id="wordCountPython" ref="topology" auto-export="interfaces"/>
+      
+  <so:topology b:id="topology" name="word-count-python">
+    <so:configuration>
+      <so:properties debug="true" workers="4"/>
+    </so:configuration>
+    <so:spouts>
+      <so:pollingSpout name="sentenceSpout" interval="100" unit="MILLISECONDS" parallelismHint="5">
+        <so:source>
+          <ss:randomSentence>
+            <ss:sentences>
+              <value>the cow jumped over the moon python</value>
+              <value>an apple a day keeps the doctor away python</value>
+              <value>four score and seven years ago python</value>
+              <value>snow white and the seven dwarfs python</value>
+              <value>i am at two with nature python</value>
+            </ss:sentences>
+          </ss:randomSentence>
+        </so:source>
+        <so:schema>
+          <value>word</value>
+        </so:schema>
+      </so:pollingSpout>
+    </so:spouts>
+
+    <so:bolts>
+      <so:shellBolt name="sentenceSplitter" parallelismHint="8">
+        <so:command>
+          <value>python</value>
+          <value>splitsentence.py</value>
+        </so:command>
+        <so:schema>
+          <value>word</value>
+        </so:schema>
+        <so:subscription>
+          <so:subscribes to="sentenceSpout"/>
+        </so:subscription>
+      </so:shellBolt>
+      <so:basicBolt name="wordCount" parallelismHint="12">
+        <so:executor>
+          <ss:wordCounter/>
+        </so:executor>
+        <so:schema>
+          <value>word</value>
+          <value>count</value>
+        </so:schema>
+        <so:subscription>
+          <so:subscribes to="sentenceSplitter"/>
+        </so:subscription>
+      </so:basicBolt>
+    </so:bolts>
+  </so:topology>
+</blueprint>

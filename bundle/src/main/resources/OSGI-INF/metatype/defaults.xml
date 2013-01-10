@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MetaData xmlns="http://www.osgi.org/xmlns/metadata/v1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="
+         http://www.osgi.org/xmlns/metadata/v1.0.0 http://www.osgi.org/xmlns/metatype/v1.1.0/metatype.xsd">
+  <OCD description="Storm Configuration" name="Storm OSGI" id="com.rmoquin.storm-osgi.topology">
+    <AD name="Cluster Mode" id="cluster.mode" required="true" type="String" default="local" description="The cluster mode to run in, either distributed or local"/>
+    <AD name="Zookeeper Servers" id="zookeeper.servers" required="true" type="String" default="localhost" description="The host/ip of each zookeeper server"/>
+    <AD name="Nimbus Host" id="nimbus.host" required="true" type="String" default="localhost" description="Hostname of the Nimbus server"/>
+  </OCD>
+  <Designate pid="com.rmoquin.storm-osgi.topology" factoryPid="com.rmoquin.storm-osgi.topology" bundle="*">
+    <Object ocdref="com.rmoquin.storm-osgi"/>
+  </Designate>
+</MetaData>
