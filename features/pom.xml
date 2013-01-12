@@ -57,5 +57,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!--<dependency>
+      <groupId>org.apache.karaf.cellar</groupId>
+      <artifactId>apache-karaf-cellar</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
+    </dependency>-->
   </dependencies>
 </project>

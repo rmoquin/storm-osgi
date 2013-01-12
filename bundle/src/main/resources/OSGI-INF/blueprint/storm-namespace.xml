@@ -2,13 +2,13 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
   <service id="StormOsgiNamespaceHandler" interface="org.apache.aries.blueprint.NamespaceHandler">
     <service-properties>
-      <entry key="osgi.service.blueprint.namespace" value="http://storm.hmsonline.com/schemas/osgi"/>
+      <entry key="osgi.service.blueprint.namespace" value="http://storm.rmoquin.com/schemas/osgi"/>
     </service-properties>
     <bean class="org.apache.xbean.blueprint.context.impl.XBeanNamespaceHandler">
-      <argument value="http://storm.hmsonline.com/schemas/osgi"/>
+      <argument value="http://storm.rmoquin.com/schemas/osgi"/>
       <argument value="storm-osgi.xsd"/>
       <argument ref="blueprintBundle"/>
-      <argument value="META-INF/services/org/apache/xbean/blueprint/http/storm.hmsonline.com/schemas/osgi"/>
+      <argument value="META-INF/services/org/apache/xbean/blueprint/http/storm.rmoquin.com/schemas/osgi"/>
     </bean>
   </service>
 </blueprint>

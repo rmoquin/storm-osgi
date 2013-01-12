@@ -22,7 +22,7 @@ public class Subscription implements Serializable {
 
   @PostConstruct
   public void init() {
-    if (this.distribution != null) {
+    if (this.distribution == null) {
       this.distribution = new ShuffleDistribution();
     }
   }
